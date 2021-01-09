@@ -33,7 +33,7 @@ class cache {
 
 cache::cache(const std::size_t& size, const std::size_t& line_size,
              emplace_policy& policy)
-    : size_{size}, line_size_{line_size}, policy_{policy} {}
+    : size_(size), line_size_(line_size), policy_(policy) {}
 
 std::size_t cache::size() const noexcept { return size_; }
 std::size_t cache::line_size() const noexcept { return line_size_; }
