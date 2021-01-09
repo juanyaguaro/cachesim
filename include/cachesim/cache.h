@@ -13,14 +13,11 @@ enum emplace_policy { LRU, MRU };
 class cache {
  public:
   // ctor
-  cache() = default;
   explicit cache(const std::size_t& size, const std::size_t& line_size,
                  emplace_policy& policy);
-  // dtor
-  ~cache() = default;
   // accessors
-  virtual std::size_t size() const noexcept = 0;
-  virtual std::size_t line_size() const noexcept = 0;
+  std::size_t size() const noexcept;
+  std::size_t line_size() const noexcept;
   virtual bool exists() const noexcept = 0;
   // mutators
   virtual void resize(const std::size_t& size,
@@ -35,7 +32,10 @@ class cache {
 
 cache::cache(const std::size_t& size, const std::size_t& line_size,
              emplace_policy& policy)
-    : size_(size), line_size_(line_size), policy_(policy) {}
+    : size_{size}, line_size_{line_size}, policy_{policy} {}
+
+std::size_t cache::size() const noexcept { return size_; }
+std::size_t cache::line_size() const noexcept { return line_size_; }
 
 }  // namespace cachesim
 
