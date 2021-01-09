@@ -13,8 +13,11 @@ enum emplace_policy { LRU, MRU };
 class cache {
  public:
   // ctor
+  cache() = default;
   explicit cache(const std::size_t& size, const std::size_t& line_size,
                  emplace_policy& policy);
+  // dtor
+  virtual ~cache() = default;
   // accessors
   std::size_t size() const noexcept;
   std::size_t line_size() const noexcept;
