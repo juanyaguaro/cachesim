@@ -20,6 +20,7 @@ class cache {
   std::size_t line_size() const noexcept;
   virtual bool exists() const noexcept = 0;
   // mutators
+  virtual void clear() = 0;
   virtual void resize(const std::size_t& size,
                       const std::size_t& line_size) = 0;
   virtual void emplace(const int& value) = 0;
