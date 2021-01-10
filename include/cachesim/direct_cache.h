@@ -17,12 +17,12 @@ class direct_cache final : public cache {
                         emplace_policy& policy);
   ~direct_cache() = default;
   // accessors
-  bool exists() const noexcept override final { return true; }
+  bool exists() const noexcept override final;
   // mutators
-  void clear() override final {}
+  void clear() override final;
   void resize(const std::size_t& size,
-              const std::size_t& line_size) override final {}
-  void emplace(const int& value) override final {}
+              const std::size_t& line_size) override final;
+  void emplace(const int& value) override final;
 
  private:
   std::vector<int> items_;
@@ -36,11 +36,10 @@ direct_cache::direct_cache(const std::size_t& size,
 
 bool direct_cache::exists() const noexcept { return true; }
 
-void direct_cache::clear() {
-  items_.clear();
-}
+void direct_cache::clear() { items_.clear(); }
 
-void direct_cache::resize(const std::size_t& size, const std::size_t& line_size) {
+void direct_cache::resize(const std::size_t& size,
+                          const std::size_t& line_size) {
   set_size(size, line_size);
   clear();
   items_.resize(size / line_size, empty_space);
