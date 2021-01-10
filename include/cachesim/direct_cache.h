@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include <vector>
+
 namespace cachesim {
 
 // class direct_cache
