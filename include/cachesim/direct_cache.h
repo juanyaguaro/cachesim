@@ -50,7 +50,7 @@ void direct_cache::resize(const std::size_t& size,
 void direct_cache::emplace(const int& value) {
   auto id{get_id(value)};
 
-  if (items_[id] == value) {
+  if (items_[id] == value && items_[id] == empty_space) {
     ++hit_count_;
   } else {
     items_[id] = value;
