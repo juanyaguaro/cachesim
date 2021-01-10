@@ -33,20 +33,28 @@ class cache {
   virtual void emplace(const int& value) = 0;
 
  protected:
+  virtual int get_id(const int& value) const noexcept;
   bool is_pow2(const std::size_t& n) const noexcept;
   void check_size() const;
   void set_size(const std::size_t& size, const std::size_t& line_size);
   // member variables
   std::size_t size_;       // cache size
   std::size_t line_size_;  // cache line size
+  int hit_count_;
+  int miss_count_;
   emplace_policy policy_;  // emplace policy
 };
 
-cache::cache() : size_(1), line_size_(1), policy_(LRU) {}
+cache::cache()
+    : size_(1), line_size_(1), policy_(LRU), hit_count_(0), miss_count_(0) {}
 
 cache::cache(const std::size_t& size, const std::size_t& line_size,
              emplace_policy& policy)
-    : size_(size), line_size_(line_size), policy_(policy) {
+    : size_(size),
+      line_size_(line_size),
+      policy_(policy),
+      hit_count_(0),
+      miss_count_(0) {
   check_size();
 }
 
