@@ -27,7 +27,7 @@ class cache {
   std::size_t line_size() const noexcept;
   int hit_count() const noexcept;
   int miss_count() const noexcept;
-  virtual bool exists() const noexcept = 0;
+  virtual bool exists(const int& value) const noexcept = 0;
   // mutators
   virtual void clear() = 0;
   virtual void resize(const std::size_t& size,
