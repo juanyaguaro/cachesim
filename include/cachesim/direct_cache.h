@@ -25,6 +25,8 @@ class direct_cache final : public cache {
   void emplace(const int& value) override final;
 
  private:
+  int get_id(const int& value) const noexcept override final;
+  // member variables
   std::vector<int> items_;
 };
 
@@ -45,7 +47,20 @@ void direct_cache::resize(const std::size_t& size,
   items_.resize(size / line_size, empty_space);
 }
 
-void direct_cache::emplace(const int& value) {}
+void direct_cache::emplace(const int& value) {
+  auto id{get_id(value)};
+
+  if (items_[id] == value) {
+    ++hit_count_;
+  } else {
+    items_[id] = value;
+    ++miss_count_;
+  }
+}
+
+int direct_cache::get_id(const int& value) const noexcept {
+  return value % (size_ / line_size_);
+}
 
 }  // namespace cachesim
 
