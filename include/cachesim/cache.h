@@ -25,6 +25,8 @@ class cache {
   // accessors
   std::size_t size() const noexcept;
   std::size_t line_size() const noexcept;
+  int hit_count() const noexcept;
+  int miss_count() const noexcept;
   virtual bool exists() const noexcept = 0;
   // mutators
   virtual void clear() = 0;
@@ -61,6 +63,10 @@ cache::cache(const std::size_t& size, const std::size_t& line_size,
 std::size_t cache::size() const noexcept { return size_; }
 
 std::size_t cache::line_size() const noexcept { return line_size_; }
+
+int cache::hit_count() const noexcept { return hit_count_; }
+
+int cache::miss_count() const noexcept { return miss_count_; }
 
 bool cache::is_pow2(const std::size_t& n) const noexcept {
   return n && !(n & (n - 1));
