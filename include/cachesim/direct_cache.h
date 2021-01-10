@@ -16,8 +16,6 @@ class direct_cache final : public cache {
   explicit direct_cache(const std::size_t& size, const std::size_t& line_size,
                         emplace_policy& policy);
   ~direct_cache() = default;
-  // accessors
-  bool exists(const int& value) const noexcept override final;
   // mutators
   void clear() override final;
   void resize(const std::size_t& size,
@@ -36,11 +34,6 @@ direct_cache::direct_cache(const std::size_t& size,
                            const std::size_t& line_size, emplace_policy& policy)
     : cache(size, line_size, policy), items_(size / line_size, empty_space) {}
 
-bool direct_cache::exists(const int& value) const noexcept {
-  auto id{get_id(value)};
-  return items_[id] == value;
-}
-
 void direct_cache::clear() { items_.clear(); }
 
 void direct_cache::resize(const std::size_t& size,
@@ -51,10 +44,11 @@ void direct_cache::resize(const std::size_t& size,
 }
 
 void direct_cache::emplace(const int& value) {
-  if (exists(value)) {
+  auto id{get_id(value)};
+
+  if (items_[id] == value) {
     ++hit_count_;
   } else {
-    auto id{get_id(value)};
     items_[id] = value;
     ++miss_count_;
   }
