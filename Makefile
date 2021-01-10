@@ -8,7 +8,7 @@ CXX_FLAGS = -std=c++17 -Wall -Werror --pedantic -o
 
 # ----------- ENVIRONMENT FLAGS -----------
 SRC  = src/cachesim.cc
-BIN = cachesim
+BIN = bin/cachesim
 RM = rm
 
 # ----------- WINDOWS -----------
