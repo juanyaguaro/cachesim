@@ -3,12 +3,15 @@
 #define CACHESIM_CACHE_H_
 
 #include <cstddef>
-#include <exception>
+#include <stdexcept>
 
 namespace cachesim {
 
 // enum emplace_policy
 enum emplace_policy { LRU, MRU };
+
+// constant empty_space
+constexpr int empty_space = -1;
 
 // class cache
 class cache {
