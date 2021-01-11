@@ -25,6 +25,7 @@ class cache {
   // accessors
   std::size_t size() const noexcept;
   std::size_t line_size() const noexcept;
+  std::size_t count() const noexcept;
   int hit_count() const noexcept;
   int miss_count() const noexcept;
   // mutators
@@ -41,18 +42,25 @@ class cache {
   // member variables
   std::size_t size_;       // cache size
   std::size_t line_size_;  // cache line size
+  std::size_t items_count_;
   int hit_count_;
   int miss_count_;
   emplace_policy policy_;  // emplace policy
 };
 
 cache::cache()
-    : size_(1), line_size_(1), hit_count_(0), miss_count_(0), policy_(LRU) {}
+    : size_(1),
+      line_size_(1),
+      items_count_(1),
+      hit_count_(0),
+      miss_count_(0),
+      policy_(LRU) {}
 
 cache::cache(const std::size_t& size, const std::size_t& line_size,
              emplace_policy& policy)
     : size_(size),
       line_size_(line_size),
+      items_count_(size / line_size_),
       hit_count_(0),
       miss_count_(0),
       policy_(policy) {
@@ -62,6 +70,8 @@ cache::cache(const std::size_t& size, const std::size_t& line_size,
 std::size_t cache::size() const noexcept { return size_; }
 
 std::size_t cache::line_size() const noexcept { return line_size_; }
+
+std::size_t cache::count() const noexcept { return items_count_; }
 
 int cache::hit_count() const noexcept { return hit_count_; }
 
@@ -80,6 +90,7 @@ void cache::check_size() const {
 void cache::set_size(const std::size_t& size, const std::size_t& line_size) {
   size_ = size;
   line_size_ = line_size;
+  items_count_ = size / line_size;
   hit_count_ = 0;
   miss_count_ = 0;
   check_size();
