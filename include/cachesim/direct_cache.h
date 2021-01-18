@@ -4,6 +4,7 @@
 
 #include <cachesim/cache.h>
 
+#include <algorithm>
 #include <iostream>
 #include <vector>
 
@@ -35,7 +36,9 @@ direct_cache::direct_cache(const std::size_t& size,
                            const std::size_t& line_size, emplace_policy& policy)
     : cache(size, line_size, policy), items_(size / line_size, empty_space) {}
 
-void direct_cache::clear() { items_.clear(); }
+void direct_cache::clear() {
+  std::fill(items_.begin(), items_.end(), empty_space);
+}
 
 void direct_cache::resize(const std::size_t& size,
                           const std::size_t& line_size) {

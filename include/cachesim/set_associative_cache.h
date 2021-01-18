@@ -7,7 +7,6 @@
 #include <algorithm>
 #include <cmath>
 #include <iostream>
-#include <list>
 #include <vector>
 
 namespace cachesim {
@@ -57,13 +56,17 @@ std::size_t set_associative_cache::set_count() const noexcept {
   return set_count_;
 }
 
-void set_associative_cache::clear() { items_.clear(); }
+void set_associative_cache::clear() {
+  std::for_each(items_.begin(), items_.end(), [](auto set) { set.clear(); });
+  hit_count_ = 0;
+  miss_count_ = 0;
+}
 
 void set_associative_cache::resize(const std::size_t& size,
                                    const std::size_t& line_size) {
   set_size(size, line_size);
   set_count_ = get_set_count(size, line_size);
-  clear();
+  items_.clear();
   items_.resize(set_count_, cache_set());
 }
 
