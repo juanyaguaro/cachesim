@@ -10,43 +10,65 @@
 #include <string>
 #include <vector>
 
+static void one_argument(const std::string& arg);
+static void two_arguments(const std::string& arg1, const std::string& arg2);
+void get_option(const std::string& arg, std::string* config, std::string* data);
 static int get_random(const int& lower_bound, const int& upper_bound);
 static void generate_random_config(const std::string& filename);
 static void generate_random_data(const std::string& filename);
 
 int main(int argc, char* argv[]) {
-  std::vector<std::string> args(argv + 1, argv + argc);
+  std::vector<std::string> args(argv, argv + argc);
 
-  if (args.size() == 1) {
-    if (cachesim::is_version_prefix(argv[1])) {
-      std::cout << cachesim::test_generator_version;
-    } else if (cachesim::is_help_prefix(argv[1])) {
-      std::cout << cachesim::test_generator_help;
-    } else {
+  args.erase(args.begin());
+  switch (args.size()) {
+    case 1:
+      one_argument(args[0]);
+      break;
+    case 2:
+      two_arguments(args[0], args[1]);
+      break;
+    default:
       std::cout << cachesim::test_generator_default;
-    }
-  } else if (args.size() == 2) {
-    std::string config_filename;
-    std::string data_filename;
+      break;
+  }
 
-    for (const auto& arg : args) {
-      if (arg.rfind(cachesim::config_prefix, 0) == 0 && arg.size() > 4) {
-        config_filename = arg.substr(3);
-      } else if (arg.rfind(cachesim::data_prefix, 0) == 0 && arg.size() > 4) {
-        data_filename = arg.substr(3);
-      }
-    }
-    if (!config_filename.empty() && !data_filename.empty()) {
-      generate_random_config(config_filename);
-      generate_random_data(data_filename);
-    } else {
-      std::cout << cachesim::test_generator_default;
-    }
+  return 0;
+}
 
+static void one_argument(const std::string& arg) {
+  auto output_message = cachesim::is_version_prefix(arg)
+                            ? cachesim::test_generator_version
+                            : cachesim::is_help_prefix(arg)
+                                  ? cachesim::test_generator_help
+                                  : cachesim::test_generator_default;
+
+  std::cout << output_message;
+}
+
+static void two_arguments(const std::string& arg1, const std::string& arg2) {
+  std::string config_filename;
+  std::string data_filename;
+
+  get_option(arg1, &config_filename, &data_filename);
+  get_option(arg2, &config_filename, &data_filename);
+  if (!config_filename.empty() && !data_filename.empty()) {
+    generate_random_config(config_filename);
+    generate_random_data(data_filename);
   } else {
     std::cout << cachesim::test_generator_default;
   }
-  return 0;
+}
+
+void get_option(const std::string& arg, std::string* config,
+                std::string* data) {
+  if (arg.size() > 4) {
+    if (arg.rfind(cachesim::config_prefix, 0) == 0) {
+      *config = arg.substr(3);
+    } else if (arg.rfind(cachesim::data_prefix, 0) == 0) {
+      *data = arg.substr(3);
+    }
+  }
 }
 
 static int get_random(const int& lower_bound, const int& upper_bound) {
