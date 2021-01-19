@@ -1,4 +1,4 @@
-# Copyright 2020 Juan Yaguaro
+# Copyright 2021 Juan Yaguaro
 # Makefile
 
 # ----------- COMPILER FLAGS -----------
