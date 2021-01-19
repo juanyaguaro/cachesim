@@ -25,7 +25,7 @@ class set_associative_cache final : public cache {
   void clear() override final;
   void resize(const std::size_t& size,
               const std::size_t& line_size) override final;
-  void emplace(const int& value) override final;
+  void allocate(const int& value) override final;
 
  private:
   std::size_t get_set_count() const noexcept;
@@ -78,7 +78,7 @@ void set_associative_cache::resize(const std::size_t& size,
 // Puts an element in its belonged set inside cache.
 // Also prints the current allocation attempt.
 // This is the main interaction function.
-void set_associative_cache::emplace(const int& value) {
+void set_associative_cache::allocate(const int& value) {
   auto id{get_id(value)};
   auto set_size{items_count_ / set_count_};
   auto set_it{std::find(items_[id].begin(), items_[id].end(), value)};
@@ -105,7 +105,7 @@ void set_associative_cache::emplace(const int& value) {
 // of items inside a set. This means that it tries to aproximate to an n*n
 // matrix but having the set count lower than the set item count.
 std::size_t set_associative_cache::get_set_count() const noexcept {
-  auto items_count_log2{(std::size_t)log2(items_count_)};
+  auto items_count_log2{static_cast<std::size_t>(log2(items_count_))};
 
   return items_count_ > 1
              ? !(items_count_log2 % 2) ? items_count_log2 : items_count_log2 - 1

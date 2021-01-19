@@ -20,7 +20,7 @@ class direct_cache final : public cache {
   void clear() override final;
   void resize(const std::size_t& size,
               const std::size_t& line_size) override final;
-  void emplace(const int& value) override final;
+  void allocate(const int& value) override final;
 
  private:
   int get_id(const int& value) const noexcept override final;
@@ -56,7 +56,7 @@ void direct_cache::resize(const std::size_t& size,
 // Puts an element in its belonged place inside cache.
 // Also prints the current allocation attempt.
 // This is the main interaction function.
-void direct_cache::emplace(const int& value) {
+void direct_cache::allocate(const int& value) {
   auto id{get_id(value)};
   auto found{items_[id] == value};
 

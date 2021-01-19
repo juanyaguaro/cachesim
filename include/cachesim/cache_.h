@@ -41,7 +41,7 @@ class cache {
   virtual void clear() = 0;
   virtual void resize(const std::size_t& size,
                       const std::size_t& line_size) = 0;
-  virtual void emplace(const int& value) = 0;
+  virtual void allocate(const int& value) = 0;
 
  protected:
   virtual int get_id(const int& value) const noexcept = 0;

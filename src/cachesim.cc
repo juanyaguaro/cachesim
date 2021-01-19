@@ -165,7 +165,7 @@ static void allocate_data(std::ifstream& is,
                           std::unique_ptr<cachesim::cache>& caches) {
   int dir = 0;
   while (is >> dir) {
-    caches->emplace(dir);
+    caches->allocate(dir);
   }
 }
 
@@ -190,9 +190,10 @@ static void print_footer(std::ostream& os, const char* alloc_total,
                          const char* hit_total, const char* miss_total,
                          const char* hit_frequency, const char* miss_frequency,
                          const std::unique_ptr<cachesim::cache>& caches) {
-  auto total{caches->hit_count() + caches->miss_count()};
-  double hit_freq{100 * caches->hit_count() / total};
-  double miss_freq{100 * caches->miss_count() / total};
+  double total{static_cast<double>(caches->hit_count()) +
+               static_cast<double>(caches->miss_count())};
+  double hit_freq{100 * static_cast<double>(caches->hit_count()) / total};
+  double miss_freq{100 * static_cast<double>(caches->miss_count()) / total};
 
   os << alloc_total << total << '\n'
      << hit_total << caches->hit_count() << '\n'
