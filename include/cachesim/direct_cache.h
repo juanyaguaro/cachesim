@@ -53,7 +53,7 @@ void direct_cache::emplace(const int& value) {
   auto id{get_id(value)};
   auto found{items_[id] == value};
 
-  print_line(os_, value, found, id, items_[id]);
+  print_line(value, found, id, items_[id]);
   if (found) {
     ++hit_count_;
   } else {

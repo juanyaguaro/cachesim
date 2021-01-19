@@ -9,20 +9,6 @@
 
 namespace cachesim {
 
-void print_line(std::ostream& os, const int& dir, const bool& hit_miss,
-                const int& id, const int& old_dir) {
-  os.width(25);
-  os << dir;
-  os.width(20);
-  os << hit_miss;
-  os.width(10);
-  os << id;
-  os.width(25);
-  os << old_dir;
-  os.width(25);
-  os << dir << '\n';
-}
-
 // enum emplace_policy
 enum emplace_policy { LRU, MRU };
 
@@ -53,6 +39,8 @@ class cache {
  protected:
   virtual int get_id(const int& value) const noexcept = 0;
   bool is_pow2(const std::size_t& n) const noexcept;
+  void print_line(const int& dir, const bool& hit_miss, const int& id,
+                  const int& old_dir) const noexcept;
   void check_size() const;
   void set_size(const std::size_t& size, const std::size_t& line_size);
   // member variables
@@ -98,6 +86,20 @@ int cache::miss_count() const noexcept { return miss_count_; }
 
 bool cache::is_pow2(const std::size_t& n) const noexcept {
   return n && !(n & (n - 1));
+}
+
+void cache::print_line(const int& dir, const bool& hit_miss, const int& id,
+                       const int& old_dir) const noexcept {
+  os_.width(25);
+  os_ << dir;
+  os_.width(20);
+  os_ << hit_miss;
+  os_.width(10);
+  os_ << id;
+  os_.width(25);
+  os_ << old_dir;
+  os_.width(25);
+  os_ << dir << '\n';
 }
 
 void cache::check_size() const {

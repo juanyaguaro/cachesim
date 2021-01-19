@@ -77,7 +77,7 @@ void set_associative_cache::emplace(const int& value) {
   auto set_it{std::find(items_[id].begin(), items_[id].end(), value)};
   auto found{set_it != std::end(items_[id])};
 
-  print_line(os_, value, found, id,
+  print_line(value, found, id,
              (items_[id].size() < set_size ? empty_space : items_[id].back()));
   if (found) {
     items_[id].erase(set_it);
