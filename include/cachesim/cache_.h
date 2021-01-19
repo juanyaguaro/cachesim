@@ -133,7 +133,7 @@ void cache::print_line(const int& dir, const bool& hit_miss, const int& id,
 // size smaller or equal to the total size.
 // It is used to check the values after ctor initialization or resizing.
 void cache::check_size() const {
-  if (!is_pow2(size_) || !is_pow2(line_size_) || line_size_ >= size_) {
+  if (!is_pow2(size_) || !is_pow2(line_size_) || line_size_ > size_) {
     throw std::invalid_argument("Invalid size");
   }
 }
