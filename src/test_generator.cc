@@ -5,14 +5,15 @@
 
 #include <cmath>
 #include <fstream>
-#include <ostream>
+#include <iostream>
 #include <random>
 #include <string>
 #include <vector>
 
 static void one_argument(const std::string& arg);
 static void many_arguments(const std::vector<std::string>& args);
-static void get_option(const std::string& arg, std::string* config, std::string* data);
+static void get_option(const std::string& arg, std::string* config,
+                       std::string* data);
 static int get_random(const int& lower_bound, const int& upper_bound);
 static void generate_random_config(const std::string& filename);
 static void generate_random_data(const std::string& filename);
