@@ -39,7 +39,7 @@ clean:
 run:
 	./$(BIN)
 
-#make test
+#make test_generator
 test_generator:
 	@echo "Creating test_generator..."
 	$(CXX) $(TEST_SRC) $(CXX_INCLUDE) $(CXX_FLAGS) $(TEST_BIN)
