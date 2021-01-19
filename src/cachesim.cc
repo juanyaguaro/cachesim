@@ -11,6 +11,7 @@
 #include <string>
 #include <vector>
 
+// Forward declarations
 static void one_argument(const std::string& arg);
 static void many_arguments(const std::vector<std::string>& args);
 static void get_option(const std::string& arg, std::string* config,
@@ -30,6 +31,7 @@ static void print_footer(std::ostream& os, const char* alloc_total,
                          const char* hit_frequency, const char* miss_frequency,
                          const std::unique_ptr<cachesim::cache>& caches);
 
+// Main function
 int main(int argc, char* argv[]) {
   std::vector<std::string> args(argv, argv + argc);
 
@@ -50,6 +52,9 @@ int main(int argc, char* argv[]) {
   return 0;
 }
 
+// Evaluates an argument looking for the prefix of version or help.
+// It will output the help, version or default message depending on the argument
+// prefix.
 static void one_argument(const std::string& arg) {
   auto output_message = cachesim::is_version_prefix(arg)
                             ? cachesim::cachesim_version
@@ -60,6 +65,9 @@ static void one_argument(const std::string& arg) {
   std::cout << output_message;
 }
 
+// Evaluates a vector of arguments to get the options inside them.
+// It aslo generates the random number files depending if the given arguments
+// were valid. Else, it will output the default message to std::cout.
 static void many_arguments(const std::vector<std::string>& args) {
   std::string config_filename;
   std::string data_filename;
@@ -76,6 +84,8 @@ static void many_arguments(const std::vector<std::string>& args) {
   }
 }
 
+// Overwrites the pointer of the selected prefix.
+// In case no prefix was found, it won't do anything (No option was found).
 static void get_option(const std::string& arg, std::string* config,
                        std::string* data, std::string* out) {
   if (arg.size() > 4) {
@@ -89,6 +99,9 @@ static void get_option(const std::string& arg, std::string* config,
   }
 }
 
+// Simulates the allocation of the directions obtained in the  data file,
+// configuring the cache depending on the parameters extracted from config file.
+// It will redirect program output to the std::ostream specified.
 static void simulate_allocation(const std::string& config_filename,
                                 const std::string& data_filename,
                                 const std::string& output_filename) {
@@ -115,6 +128,9 @@ static void simulate_allocation(const std::string& config_filename,
   }
 }
 
+// Returns a cachesim::cache instance depending on the config input file.
+// It will check for the data beforehand, making sure that no invalid data was
+// read.
 static std::unique_ptr<cachesim::cache> create_simulator(std::ifstream& is,
                                                          std::ostream& os) {
   int size = 0;
@@ -122,6 +138,7 @@ static std::unique_ptr<cachesim::cache> create_simulator(std::ifstream& is,
   int line_size = 0;
   int policy = 0;
   std::unique_ptr<cachesim::cache> new_cache = nullptr;
+
   if (is >> size >> type >> line_size >> policy) {
     switch (type) {
       case 0:
@@ -139,18 +156,20 @@ static std::unique_ptr<cachesim::cache> create_simulator(std::ifstream& is,
   } else {
     std::cout << "Invalid input read in config file.\n";
   }
+
   return new_cache;
 }
 
+// Allocates the data read from the data file into the cache simulator.
 static void allocate_data(std::ifstream& is,
                           std::unique_ptr<cachesim::cache>& caches) {
   int dir = 0;
   while (is >> dir) {
     caches->emplace(dir);
   }
-  // output rates
 }
 
+// Outputs header content to the given std::ostream.
 static void print_header(std::ostream& os, const char* dir,
                          const char* hit_miss, const char* id,
                          const char* old_dir, const char* new_dir) {
@@ -166,14 +185,18 @@ static void print_header(std::ostream& os, const char* dir,
   os << new_dir << '\n';
 }
 
+// Outputs footer content to the given std::ostream.
 static void print_footer(std::ostream& os, const char* alloc_total,
                          const char* hit_total, const char* miss_total,
                          const char* hit_frequency, const char* miss_frequency,
                          const std::unique_ptr<cachesim::cache>& caches) {
   auto total{caches->hit_count() + caches->miss_count()};
+  double hit_freq{100 * caches->hit_count() / total};
+  double miss_freq{100 * caches->miss_count() / total};
+
   os << alloc_total << total << '\n'
      << hit_total << caches->hit_count() << '\n'
      << miss_total << caches->miss_count() << '\n'
-     << hit_frequency << 100 * caches->hit_count() / total << "%\n"
-     << miss_frequency << 100 * caches->miss_count() / total << "%\n";
+     << hit_frequency << hit_freq << "%\n"
+     << miss_frequency << miss_freq << "%\n";
 }

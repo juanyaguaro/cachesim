@@ -10,7 +10,7 @@
 #include <string>
 #include <vector>
 
-// Forward declarations.
+// Forward declarations
 static void one_argument(const std::string& arg);
 static void many_arguments(const std::vector<std::string>& args);
 static void get_option(const std::string& arg, std::string* config,
@@ -21,7 +21,7 @@ static void generate_random_data(const std::string& filename);
 static void write_random_data(std::ofstream& os,
                               const std::vector<int>& random_data);
 
-// Main function.
+// Main function
 int main(int argc, char* argv[]) {
   std::vector<std::string> args(argv, argv + argc);
 
@@ -74,7 +74,7 @@ static void many_arguments(const std::vector<std::string>& args) {
 }
 
 // Overwrites the pointer of the selected prefix.
-// In case no prefix was found, it won't do anything (So no option was found).
+// In case no prefix was found, it won't do anything (No option was found).
 void get_option(const std::string& arg, std::string* config,
                 std::string* data) {
   if (arg.size() > 4) {
@@ -139,6 +139,7 @@ static void write_random_data(std::ofstream& os,
   std::mt19937 gen(rd());
   std::uniform_int_distribution<> distr(cachesim::limits::num_min,
                                         random_data.size() - 1);
+
   for (auto i = 0; i < n; ++i) {
     os << random_data[distr(gen)] << '\n';
   }
