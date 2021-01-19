@@ -156,5 +156,5 @@ static void print_header(std::ostream& os, const char* dir,
   os.width(25);
   os << old_dir;
   os.width(25);
-  os << dir << '\n';
+  os << new_dir << '\n';
 }
