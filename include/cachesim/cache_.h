@@ -18,7 +18,7 @@ enum emplace_policy { LRU, MRU };
 constexpr int empty_space = -1;
 
 // class cache
-// Abstract definition of a cache
+// Abstract definition of a cache.
 class cache {
  public:
   // ctor
@@ -47,13 +47,13 @@ class cache {
   void check_size() const;
   void set_size(const std::size_t& size, const std::size_t& line_size);
   // member variables
-  std::size_t size_;       // cache size
-  std::size_t line_size_;  // cache line size
-  std::size_t items_count_;
-  int hit_count_;
-  int miss_count_;
-  emplace_policy policy_;  // emplace policy
-  std::ostream& os_;
+  std::size_t size_;         // cache size
+  std::size_t line_size_;    // cache line size
+  std::size_t items_count_;  // max cache item count
+  int hit_count_;            // cache hit count
+  int miss_count_;           // cache miss count
+  emplace_policy policy_;    // cache emplace policy
+  std::ostream& os_;         // output stream
 };
 
 // Default ctor
