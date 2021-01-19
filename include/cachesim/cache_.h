@@ -2,10 +2,12 @@
 #ifndef CACHESIM_CACHE__H_
 #define CACHESIM_CACHE__H_
 
+#include <algorithm>
 #include <cstddef>
 #include <iomanip>
 #include <iostream>
 #include <stdexcept>
+#include <vector>
 
 namespace cachesim {
 
@@ -16,6 +18,8 @@ enum emplace_policy { LRU, MRU };
 // constant empty_space
 // Defines an empty space in cache.
 constexpr int empty_space = -1;
+
+using cache_set = std::vector<int>;  // just to make things simpler.
 
 // class cache
 // Abstract definition of a cache.
