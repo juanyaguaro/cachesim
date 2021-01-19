@@ -13,6 +13,7 @@ constexpr const std::string_view help_prefix_l = "--help";
 
 constexpr const std::string_view config_prefix = "-c=";
 constexpr const std::string_view data_prefix = "-d=";
+constexpr const std::string_view out_prefix = "-o=";
 
 bool is_version_prefix(std::string_view s) {
   return s == version_prefix_s || s == version_prefix_l;
