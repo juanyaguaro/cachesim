@@ -5,6 +5,7 @@
 #include <cachesim/version.h>
 
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <memory>
 #include <string>
@@ -19,7 +20,11 @@ static void simulate_allocation(const std::string& config_filename,
                                 const std::string& output_filename);
 static std::unique_ptr<cachesim::cache> create_simulator(std::ifstream& is,
                                                          std::ostream& os);
-void allocate_data(std::ifstream& is, std::unique_ptr<cachesim::cache>& caches);
+static void allocate_data(std::ifstream& is,
+                          std::unique_ptr<cachesim::cache>& caches);
+static void print_header(std::ostream& os, const char* dir,
+                         const char* hit_miss, const char* id,
+                         const char* old_dir, const char* new_dir);
 
 int main(int argc, char* argv[]) {
   std::vector<std::string> args(argv, argv + argc);
@@ -67,8 +72,8 @@ static void many_arguments(const std::vector<std::string>& args) {
   }
 }
 
-void get_option(const std::string& arg, std::string* config, std::string* data,
-                std::string* out) {
+static void get_option(const std::string& arg, std::string* config,
+                       std::string* data, std::string* out) {
   if (arg.size() > 4) {
     if (arg.rfind(cachesim::config_prefix, 0) == 0) {
       *config = arg.substr(3);
@@ -92,10 +97,8 @@ static void simulate_allocation(const std::string& config_filename,
     std::unique_ptr<cachesim::cache> cache_simulator(
         create_simulator(config_is, os));
     if (data_is.is_open()) {
-      os << "Direction to allocate\t"
-         << "Hit(1)/Miss(0)\t"
-         << "Old cache line content\t"
-         << "New cache line content\n";
+      print_header(os, "Direction to allocate", "Hit(1)/Miss(0)", "Set ID",
+                   "Old cache line content", "New cache line content");
       allocate_data(data_is, cache_simulator);
     } else {
       std::cout << "Failed to open " << data_filename << '\n';
@@ -132,11 +135,26 @@ static std::unique_ptr<cachesim::cache> create_simulator(std::ifstream& is,
   return new_cache;
 }
 
-void allocate_data(std::ifstream& is,
-                   std::unique_ptr<cachesim::cache>& caches) {
+static void allocate_data(std::ifstream& is,
+                          std::unique_ptr<cachesim::cache>& caches) {
   int dir = 0;
   while (is >> dir) {
     caches->emplace(dir);
   }
   // output rates
+}
+
+static void print_header(std::ostream& os, const char* dir,
+                         const char* hit_miss, const char* id,
+                         const char* old_dir, const char* new_dir) {
+  os.width(25);
+  os << dir;
+  os.width(20);
+  os << hit_miss;
+  os.width(10);
+  os << id;
+  os.width(25);
+  os << old_dir;
+  os.width(25);
+  os << dir << '\n';
 }
