@@ -14,10 +14,11 @@ constexpr const char* test_generator_version =
 
 // cachesim --help output.
 constexpr const char* cachesim_help =
-    "Usage: cachesim -c=[VALUE] -d=[OPTION] -o=[OPTION]\n"
-    "\t-c=[VALUE]\t\tfilename for config file.\n"
-    "\t-d=[VALUE]\t\tfilename for data file.\n"
-    "\t-d=[VALUE]\t\tfilename for output file (default value is stdout).\n"
+    "Usage: cachesim -c=[FILENAME] -d=[FILENAME] -o=[FILENAME] -[OPTION]\n"
+    "\t-c=[FILENAME]\t\tfilename for config file.\n"
+    "\t-d=[FILENAME]\t\tfilename for data file.\n"
+    "\t-o=[FILENAME]\t\tfilename for output file (default value is std::cout).\n"
+    "\t-x\t\toutput hex values of directions.\n"
     "\t-h, --help\t\tdisplay all available commands.\n"
     "\t-v, --version\t\tdisplay version of test_generator.\n"
     "Full documentation at: <https://github.com/juanyaguaro/cachesim>.\n"
@@ -25,7 +26,7 @@ constexpr const char* cachesim_help =
 
 // test_generator --help output.
 constexpr const char* test_generator_help =
-    "Usage: test_generator -c=[VALUE] -d=[OPTION]\n"
+    "Usage: test_generator -c=[FILENAME] -d=[FILENAME]\n"
     "\t-c=[VALUE]\t\tfilename for config file.\n"
     "\t-d=[VALUE]\t\tfilename for data file.\n"
     "\t-h, --help\t\tdisplay all available commands.\n"

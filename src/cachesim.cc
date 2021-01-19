@@ -15,12 +15,14 @@
 static void one_argument(const std::string& arg);
 static void many_arguments(const std::vector<std::string>& args);
 static void get_option(const std::string& arg, std::string* config,
-                       std::string* data, std::string* out);
+                       std::string* data, std::string* out, bool* hex);
 static void simulate_allocation(const std::string& config_filename,
                                 const std::string& data_filename,
-                                const std::string& output_filename);
+                                const std::string& output_filename,
+                                const bool& hex_output);
 static std::unique_ptr<cachesim::cache> create_simulator(std::ifstream& is,
-                                                         std::ostream& os);
+                                                         std::ostream& os,
+                                                         const bool& hex);
 static void allocate_data(std::ifstream& is,
                           std::unique_ptr<cachesim::cache>& caches);
 static void print_header(std::ostream& os, const char* dir,
@@ -69,16 +71,19 @@ static void one_argument(const std::string& arg) {
 // It aslo generates the random number files depending if the given arguments
 // were valid. Else, it will output the default message to std::cout.
 static void many_arguments(const std::vector<std::string>& args) {
+  bool hex_output = false;
   std::string config_filename;
   std::string data_filename;
   std::string output_filename;
 
   for (const auto& arg : args) {
-    get_option(arg, &config_filename, &data_filename, &output_filename);
+    get_option(arg, &config_filename, &data_filename, &output_filename,
+               &hex_output);
   }
 
   if (!config_filename.empty() && !data_filename.empty()) {
-    simulate_allocation(config_filename, data_filename, output_filename);
+    simulate_allocation(config_filename, data_filename, output_filename,
+                        hex_output);
   } else {
     std::cout << cachesim::cachesim_default;
   }
@@ -87,7 +92,7 @@ static void many_arguments(const std::vector<std::string>& args) {
 // Overwrites the pointer of the selected prefix.
 // In case no prefix was found, it won't do anything (No option was found).
 static void get_option(const std::string& arg, std::string* config,
-                       std::string* data, std::string* out) {
+                       std::string* data, std::string* out, bool* hex) {
   if (arg.size() > 4) {
     if (arg.rfind(cachesim::config_prefix, 0) == 0) {
       *config = arg.substr(3);
@@ -96,6 +101,8 @@ static void get_option(const std::string& arg, std::string* config,
     } else if (arg.rfind(cachesim::out_prefix, 0) == 0) {
       *out = arg.substr(3);
     }
+  } else if (arg == cachesim::hex_prefix) {
+    *hex = true;
   }
 }
 
@@ -104,7 +111,8 @@ static void get_option(const std::string& arg, std::string* config,
 // It will redirect program output to the std::ostream specified.
 static void simulate_allocation(const std::string& config_filename,
                                 const std::string& data_filename,
-                                const std::string& output_filename) {
+                                const std::string& output_filename,
+                                const bool& hex_output) {
   std::ifstream config_is(config_filename);
   std::ifstream data_is(data_filename);
   std::ofstream ofs(output_filename, std::ios::out);
@@ -112,7 +120,7 @@ static void simulate_allocation(const std::string& config_filename,
 
   if (config_is.is_open()) {
     std::unique_ptr<cachesim::cache> cache_simulator(
-        create_simulator(config_is, os));
+        create_simulator(config_is, os, hex_output));
     if (data_is.is_open()) {
       print_header(os, "Direction to allocate", "Hit(1)/Miss(0)", "Set ID",
                    "Old cache line content", "New cache line content");
@@ -132,7 +140,8 @@ static void simulate_allocation(const std::string& config_filename,
 // It will check for the data beforehand, making sure that no invalid data was
 // read.
 static std::unique_ptr<cachesim::cache> create_simulator(std::ifstream& is,
-                                                         std::ostream& os) {
+                                                         std::ostream& os,
+                                                         const bool& hex) {
   int size = 0;
   int type = 0;
   int line_size = 0;
@@ -143,11 +152,11 @@ static std::unique_ptr<cachesim::cache> create_simulator(std::ifstream& is,
     switch (type) {
       case 0:
         new_cache = std::make_unique<cachesim::direct_cache>(size, line_size,
-                                                             policy, os);
+                                                             policy, os, hex);
         break;
       case 1:
         new_cache = std::make_unique<cachesim::set_associative_cache>(
-            size, line_size, policy, os);
+            size, line_size, policy, os, false);
         break;
       default:
         std::cout << "Invalid cache type read in config file.\n";

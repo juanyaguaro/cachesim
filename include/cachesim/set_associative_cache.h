@@ -17,7 +17,8 @@ class set_associative_cache final : public cache {
   set_associative_cache();
   explicit set_associative_cache(const std::size_t& size,
                                  const std::size_t& line_size,
-                                 const int& policy, std::ostream& os);
+                                 const int& policy, std::ostream& os,
+                                 const bool& hex);
   ~set_associative_cache() = default;
   // accessors
   virtual std::size_t set_count() const noexcept;
@@ -49,8 +50,8 @@ set_associative_cache::set_associative_cache()
 set_associative_cache::set_associative_cache(const std::size_t& size,
                                              const std::size_t& line_size,
                                              const int& policy,
-                                             std::ostream& os)
-    : cache(size, line_size, policy, os),
+                                             std::ostream& os, const bool& hex)
+    : cache(size, line_size, policy, os, hex),
       set_count_(get_set_count()),
       items_(set_count_, cache_set()) {}
 

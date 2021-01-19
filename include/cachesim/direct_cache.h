@@ -14,7 +14,7 @@ class direct_cache final : public cache {
   // ctor
   direct_cache();
   explicit direct_cache(const std::size_t& size, const std::size_t& line_size,
-                        const int& policy, std::ostream& os);
+                        const int& policy, std::ostream& os, const bool& hex);
   ~direct_cache() = default;
   // mutators
   void clear() override final;
@@ -37,8 +37,9 @@ direct_cache::direct_cache() : cache(), items_(1, empty_space) {}
 // The sizes check is performed under the cache ctor.
 direct_cache::direct_cache(const std::size_t& size,
                            const std::size_t& line_size, const int& policy,
-                           std::ostream& os)
-    : cache(size, line_size, policy, os), items_(items_count_, empty_space) {}
+                           std::ostream& os, const bool& hex)
+    : cache(size, line_size, policy, os, hex),
+      items_(items_count_, empty_space) {}
 
 // Wipes all items and replaces it with empty spaces.
 void direct_cache::clear() {

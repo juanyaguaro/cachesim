@@ -28,7 +28,7 @@ class cache {
   // ctor
   cache();
   explicit cache(const std::size_t& size, const std::size_t& line_size,
-                 const int& policy, std::ostream& os);
+                 const int& policy, std::ostream& os, const bool& hex);
   // dtor
   virtual ~cache() = default;
   // accessors
@@ -58,6 +58,7 @@ class cache {
   int miss_count_;           // cache miss count
   emplace_policy policy_;    // cache emplace policy
   std::ostream& os_;         // output stream
+  bool hex_;                 // output hex value for directions
 };
 
 // Default ctor
@@ -70,7 +71,8 @@ cache::cache()
       hit_count_(0),
       miss_count_(0),
       policy_(LRU),
-      os_(std::cout) {}
+      os_(std::cout),
+      hex_(false) {}
 
 // Explicit ctor
 // Initializes the items count to size / line size
@@ -78,14 +80,15 @@ cache::cache()
 // Converts the policy integer into an enum value using a static cast.
 // It will check if the size and line size are powers of 2.
 cache::cache(const std::size_t& size, const std::size_t& line_size,
-             const int& policy, std::ostream& os)
+             const int& policy, std::ostream& os, const bool& hex)
     : size_(size),
       line_size_(line_size),
       items_count_(size / line_size_),
       hit_count_(0),
       miss_count_(0),
       policy_(static_cast<emplace_policy>(policy)),
-      os_(os) {
+      os_(os),
+      hex_(hex) {
   check_size();
 }
 
@@ -118,13 +121,13 @@ bool cache::is_pow2(const std::size_t& n) const noexcept {
 void cache::print_line(const int& dir, const bool& hit_miss, const int& id,
                        const int& old_dir) const noexcept {
   os_.width(25);
-  os_ << std::hex << dir;
+  os_ << (hex_ ? std::hex : std::dec) << dir;
   os_.width(20);
   os_ << std::dec << hit_miss;
   os_.width(10);
   os_ << id;
   os_.width(25);
-  os_ << std::hex << old_dir;
+  os_ << (hex_ ? std::hex : std::dec) << old_dir;
   os_.width(25);
   os_ << old_dir << std::dec << '\n';
 }
