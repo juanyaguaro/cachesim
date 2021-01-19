@@ -51,10 +51,10 @@ void direct_cache::resize(const std::size_t& size,
 
 void direct_cache::emplace(const int& value) {
   auto id{get_id(value)};
+  auto found{items_[id] == value};
 
-  os_ << value << '\t' << (items_[id] == value) << '\t' << items_[id] << '\t'
-      << value << '\n';
-  if (items_[id] == value) {
+  print_line(os_, value, found, id, items_[id]);
+  if (found) {
     ++hit_count_;
   } else {
     items_[id] = value;

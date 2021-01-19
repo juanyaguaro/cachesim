@@ -3,10 +3,25 @@
 #define CACHESIM_CACHE__H_
 
 #include <cstddef>
+#include <iomanip>
 #include <iostream>
 #include <stdexcept>
 
 namespace cachesim {
+
+void print_line(std::ostream& os, const int& dir, const bool& hit_miss,
+                const int& id, const int& old_dir) {
+  os.width(25);
+  os << dir;
+  os.width(20);
+  os << hit_miss;
+  os.width(10);
+  os << id;
+  os.width(25);
+  os << old_dir;
+  os.width(25);
+  os << dir << '\n';
+}
 
 // enum emplace_policy
 enum emplace_policy { LRU, MRU };
