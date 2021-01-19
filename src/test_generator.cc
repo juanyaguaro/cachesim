@@ -5,7 +5,7 @@
 
 #include <cmath>
 #include <fstream>
-#include <iostream>
+#include <ostream>
 #include <random>
 #include <string>
 #include <vector>
