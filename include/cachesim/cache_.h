@@ -91,15 +91,15 @@ bool cache::is_pow2(const std::size_t& n) const noexcept {
 void cache::print_line(const int& dir, const bool& hit_miss, const int& id,
                        const int& old_dir) const noexcept {
   os_.width(25);
-  os_ << dir;
+  os_ << std::hex << dir;
   os_.width(20);
-  os_ << hit_miss;
+  os_ << std::dec << hit_miss;
   os_.width(10);
   os_ << id;
   os_.width(25);
-  os_ << old_dir;
+  os_ << std::hex << old_dir;
   os_.width(25);
-  os_ << dir << '\n';
+  os_ << old_dir << std::dec << '\n';
 }
 
 void cache::check_size() const {
