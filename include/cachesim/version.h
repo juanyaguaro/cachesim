@@ -1,6 +1,6 @@
 // Copyright 2020 Juan Yaguaro
 #ifndef CACHESIM_VERSION_H_
-#define CACHESIM_VERSION_H_ "0.1.0"
+#define CACHESIM_VERSION_H_ "0.1.1"
 
 namespace cachesim {
 
