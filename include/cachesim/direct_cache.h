@@ -4,10 +4,6 @@
 
 #include <cachesim/cache_.h>
 
-#include <algorithm>
-#include <iostream>
-#include <vector>
-
 namespace cachesim {
 
 // class direct_cache
@@ -29,7 +25,7 @@ class direct_cache final : public cache {
  private:
   int get_id(const int& value) const noexcept override final;
   // member variables
-  std::vector<int> items_;  // cache items
+  cache_set items_;  // cache items
 };
 
 // Default ctor
@@ -38,7 +34,7 @@ direct_cache::direct_cache() : cache(), items_(1, empty_space) {}
 
 // Explicit ctor
 // Creates an n item cache filled with empty spaces.
-// The sizes checks is performed under the cache ctor.
+// The sizes check is performed under the cache ctor.
 direct_cache::direct_cache(const std::size_t& size,
                            const std::size_t& line_size, const int& policy,
                            std::ostream& os)
