@@ -2,7 +2,7 @@
 #ifndef CACHESIM_SET_ASSOCIATIVE_CACHE_H_
 #define CACHESIM_SET_ASSOCIATIVE_CACHE_H_
 
-#include <cachesim/cache.h>
+#include <cachesim/cache_.h>
 
 #include <algorithm>
 #include <cmath>
@@ -20,7 +20,7 @@ class set_associative_cache final : public cache {
   set_associative_cache();
   explicit set_associative_cache(const std::size_t& size,
                                  const std::size_t& line_size,
-                                 emplace_policy& policy);
+                                 const int& policy, std::ostream& os);
   ~set_associative_cache() = default;
   // accessors
   virtual std::size_t set_count() const noexcept;
@@ -47,8 +47,9 @@ set_associative_cache::set_associative_cache()
 
 set_associative_cache::set_associative_cache(const std::size_t& size,
                                              const std::size_t& line_size,
-                                             emplace_policy& policy)
-    : cache(size, line_size, policy),
+                                             const int& policy,
+                                             std::ostream& os)
+    : cache(size, line_size, policy, os),
       set_count_(get_set_count(size, line_size)),
       items_(set_count_, cache_set()) {}
 
@@ -75,6 +76,9 @@ void set_associative_cache::emplace(const int& value) {
   auto set_size{items_count_ / set_count_};
   auto set_it{std::find(items_[id].begin(), items_[id].end(), value)};
 
+  os_ << value << '\t' << (set_it != std::end(items_[id])) << '\t'
+      << (items_[id].empty() ? empty_space : items_[id].back()) << '\t' << value
+      << '\n';
   if (set_it != std::end(items_[id])) {
     items_[id].erase(set_it);
     items_[id].push_back(value);
