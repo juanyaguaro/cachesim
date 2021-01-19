@@ -106,7 +106,7 @@ static void get_option(const std::string& arg, std::string* config,
   }
 }
 
-// Simulates the allocation of the directions obtained in the  data file,
+// Simulates the allocation of the addresses obtained in the  data file,
 // configuring the cache depending on the parameters extracted from config file.
 // It will redirect program output to the std::ostream specified.
 static void simulate_allocation(const std::string& config_filename,
@@ -122,7 +122,7 @@ static void simulate_allocation(const std::string& config_filename,
     std::unique_ptr<cachesim::cache> cache_simulator(
         create_simulator(config_is, os, hex_output));
     if (data_is.is_open()) {
-      print_header(os, "Direction to allocate", "Hit(1)/Miss(0)", "Set ID",
+      print_header(os, "Address to allocate", "Hit(1)/Miss(0)", "Set ID",
                    "Old cache line content", "New cache line content");
       allocate_data(data_is, cache_simulator);
       print_footer(os, "Total cache allocations: ", "Total cache hits: ",

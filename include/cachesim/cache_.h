@@ -58,7 +58,7 @@ class cache {
   int miss_count_;           // cache miss count
   emplace_policy policy_;    // cache emplace policy
   std::ostream& os_;         // output stream
-  bool hex_;                 // output hex value for directions
+  bool hex_;                 // output hex value for addresses
 };
 
 // Default ctor
