@@ -11,7 +11,7 @@
 #include <vector>
 
 static void one_argument(const std::string& arg);
-static void two_arguments(const std::string& arg1, const std::string& arg2);
+static void many_arguments(const std::vector<std::string>& args);
 void get_option(const std::string& arg, std::string* config, std::string* data);
 static int get_random(const int& lower_bound, const int& upper_bound);
 static void generate_random_config(const std::string& filename);
@@ -26,7 +26,7 @@ int main(int argc, char* argv[]) {
       one_argument(args[0]);
       break;
     case 2:
-      two_arguments(args[0], args[1]);
+      many_arguments(args);
       break;
     default:
       std::cout << cachesim::test_generator_default;
@@ -46,12 +46,14 @@ static void one_argument(const std::string& arg) {
   std::cout << output_message;
 }
 
-static void two_arguments(const std::string& arg1, const std::string& arg2) {
+static void many_arguments(const std::vector<std::string>& args) {
   std::string config_filename;
   std::string data_filename;
 
-  get_option(arg1, &config_filename, &data_filename);
-  get_option(arg2, &config_filename, &data_filename);
+  for (const auto& arg : args) {
+    get_option(arg, &config_filename, &data_filename);
+  }
+
   if (!config_filename.empty() && !data_filename.empty()) {
     generate_random_config(config_filename);
     generate_random_data(data_filename);
