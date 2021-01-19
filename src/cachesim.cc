@@ -173,8 +173,9 @@ static void allocate_data(std::ifstream& is,
 static void print_header(std::ostream& os, const char* dir,
                          const char* hit_miss, const char* id,
                          const char* old_dir, const char* new_dir) {
+  os << std::setfill('-') << std::setw(106) << '\n';
   os.width(25);
-  os << dir;
+  os << std::setfill(' ') << dir;
   os.width(20);
   os << hit_miss;
   os.width(10);
@@ -183,6 +184,8 @@ static void print_header(std::ostream& os, const char* dir,
   os << old_dir;
   os.width(25);
   os << new_dir << '\n';
+  os << std::setfill('-') << std::setw(106) << '\n';
+  os << std::setfill(' ');
 }
 
 // Outputs footer content to the given std::ostream.
@@ -195,9 +198,24 @@ static void print_footer(std::ostream& os, const char* alloc_total,
   double hit_freq{100 * static_cast<double>(caches->hit_count()) / total};
   double miss_freq{100 * static_cast<double>(caches->miss_count()) / total};
 
-  os << alloc_total << total << '\n'
-     << hit_total << caches->hit_count() << '\n'
-     << miss_total << caches->miss_count() << '\n'
-     << hit_frequency << hit_freq << "%\n"
-     << miss_frequency << miss_freq << "%\n";
+  os.width(25);
+  os << alloc_total;
+  os.width(10);
+  os << total << '\n';
+  os.width(25);
+  os << hit_total;
+  os.width(10);
+  os << caches->hit_count() << '\n';
+  os.width(25);
+  os << miss_total;
+  os.width(10);
+  os << caches->miss_count() << '\n';
+  os.width(25);
+  os << hit_frequency;
+  os.width(10);
+  os << hit_freq << "%\n";
+  os.width(25);
+  os << miss_frequency;
+  os.width(10);
+  os << miss_freq << "%\n";
 }
