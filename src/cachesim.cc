@@ -25,6 +25,10 @@ static void allocate_data(std::ifstream& is,
 static void print_header(std::ostream& os, const char* dir,
                          const char* hit_miss, const char* id,
                          const char* old_dir, const char* new_dir);
+static void print_footer(std::ostream& os, const char* alloc_total,
+                         const char* hit_total, const char* miss_total,
+                         const char* hit_frequency, const char* miss_frequency,
+                         const std::unique_ptr<cachesim::cache>& caches);
 
 int main(int argc, char* argv[]) {
   std::vector<std::string> args(argv, argv + argc);
@@ -100,6 +104,9 @@ static void simulate_allocation(const std::string& config_filename,
       print_header(os, "Direction to allocate", "Hit(1)/Miss(0)", "Set ID",
                    "Old cache line content", "New cache line content");
       allocate_data(data_is, cache_simulator);
+      print_footer(os, "Total cache allocations: ", "Total cache hits: ",
+                   "Total cache misses: ", "Cache hit frequency: ",
+                   "Cache miss frequency: ", cache_simulator);
     } else {
       std::cout << "Failed to open " << data_filename << '\n';
     }
@@ -157,4 +164,16 @@ static void print_header(std::ostream& os, const char* dir,
   os << old_dir;
   os.width(25);
   os << new_dir << '\n';
+}
+
+static void print_footer(std::ostream& os, const char* alloc_total,
+                         const char* hit_total, const char* miss_total,
+                         const char* hit_frequency, const char* miss_frequency,
+                         const std::unique_ptr<cachesim::cache>& caches) {
+  auto total{caches->hit_count() + caches->miss_count()};
+  os << alloc_total << total << '\n'
+     << hit_total << caches->hit_count() << '\n'
+     << miss_total << caches->miss_count() << '\n'
+     << hit_frequency << 100 * caches->hit_count() / total << "%\n"
+     << miss_frequency << 100 * caches->miss_count() / total << "%\n";
 }
