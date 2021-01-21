@@ -1,6 +1,6 @@
-// Copyright 2020 Juan Yaguaro
+// Copyright 2021 Juan Yaguaro
 #ifndef CACHESIM_VERSION_H_
-#define CACHESIM_VERSION_H_ "0.1.1"
+#define CACHESIM_VERSION_H_ "0.2.0"
 
 namespace cachesim {
 
@@ -17,7 +17,8 @@ constexpr const char* cachesim_help =
     "Usage: cachesim -c=[FILENAME] -d=[FILENAME] -o=[FILENAME] -[OPTION]\n"
     "\t-c=[FILENAME]\t\tfilename for config file.\n"
     "\t-d=[FILENAME]\t\tfilename for data file.\n"
-    "\t-o=[FILENAME]\t\tfilename for output file (default value is std::cout).\n"
+    "\t-o=[FILENAME]\t\tfilename for output file (default value is "
+    "std::cout).\n"
     "\t-x\t\toutput hex values of directions.\n"
     "\t-h, --help\t\tdisplay all available commands.\n"
     "\t-v, --version\t\tdisplay version of test_generator.\n"

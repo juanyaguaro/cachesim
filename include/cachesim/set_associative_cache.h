@@ -108,7 +108,7 @@ void set_associative_cache::allocate(const int& value) {
 std::size_t set_associative_cache::get_set_count() const noexcept {
   auto items_count_log2{static_cast<std::size_t>(log2(items_count_))};
 
-  return items_count_ > 1
+  return items_count_ > 2
              ? !(items_count_log2 % 2) ? items_count_log2 : items_count_log2 - 1
              : 1;
 }

@@ -1,4 +1,5 @@
 // Copyright 2021 Juan Yaguaro
+#include <cachesim/error.h>
 #include <cachesim/limits.h>
 #include <cachesim/prefix.h>
 #include <cachesim/version.h>
@@ -49,7 +50,7 @@ static void one_argument(const std::string& arg) {
                             ? cachesim::test_generator_version
                             : cachesim::is_help_prefix(arg)
                                   ? cachesim::test_generator_help
-                                  : cachesim::test_generator_default;
+                                  : cachesim::error::invalid_argument;
 
   std::cout << output_message;
 }
@@ -58,18 +59,27 @@ static void one_argument(const std::string& arg) {
 // It aslo generates the random number files depending if the given arguments
 // were valid. Else, it will output the default message to std::cout.
 static void many_arguments(const std::vector<std::string>& args) {
+  auto invalid_argument_read = false;
   std::string config_filename;
   std::string data_filename;
 
   for (const auto& arg : args) {
-    get_option(arg, &config_filename, &data_filename);
+    try {
+      get_option(arg, &config_filename, &data_filename);
+    } catch (const std::exception& e) {
+      invalid_argument_read = true;
+      config_filename.clear();
+      break;
+    }
   }
 
   if (!config_filename.empty() && !data_filename.empty()) {
     generate_random_config(config_filename);
     generate_random_data(data_filename);
   } else {
-    std::cout << cachesim::test_generator_default;
+    std::cout << (invalid_argument_read
+                      ? cachesim::error::invalid_argument
+                      : cachesim::error::no_input_files_detected);
   }
 }
 
@@ -83,6 +93,8 @@ void get_option(const std::string& arg, std::string* config,
     } else if (arg.rfind(cachesim::data_prefix, 0) == 0) {
       *data = arg.substr(3);
     }
+  } else {
+    throw std::invalid_argument(cachesim::error::invalid_argument);
   }
 }
 

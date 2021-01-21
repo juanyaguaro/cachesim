@@ -2,6 +2,8 @@
 #ifndef CACHESIM_CACHE__H_
 #define CACHESIM_CACHE__H_
 
+#include <cachesim/error.h>
+
 #include <algorithm>
 #include <cstddef>
 #include <iomanip>
@@ -137,7 +139,7 @@ void cache::print_line(const int& dir, const bool& hit_miss, const int& id,
 // It is used to check the values after ctor initialization or resizing.
 void cache::check_size() const {
   if (!is_pow2(size_) || !is_pow2(line_size_) || line_size_ > size_) {
-    throw std::invalid_argument("Invalid size");
+    throw std::invalid_argument(error::invalid_cache_size);
   }
 }
 

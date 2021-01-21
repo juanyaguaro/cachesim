@@ -10,7 +10,8 @@ namespace limits {
 constexpr const std::size_t it_min = 1;
 constexpr const std::size_t it_max = 100;
 
-// Numeric values limits. Represents a max of 2^16 (emulating 16-bit architecture).
+// Numeric values limits. Represents a max of 2^16 (emulating 16-bit
+// architecture).
 constexpr const std::size_t num_min = 0;
 constexpr const std::size_t num_max = 65535;
 

@@ -25,12 +25,8 @@ static std::unique_ptr<cachesim::cache> create_simulator(std::ifstream& is,
                                                          const bool& hex);
 static void allocate_data(std::ifstream& is,
                           std::unique_ptr<cachesim::cache>& caches);
-static void print_header(std::ostream& os, const char* dir,
-                         const char* hit_miss, const char* id,
-                         const char* old_dir, const char* new_dir);
-static void print_footer(std::ostream& os, const char* alloc_total,
-                         const char* hit_total, const char* miss_total,
-                         const char* hit_frequency, const char* miss_frequency,
+static void print_header(std::ostream& os);
+static void print_footer(std::ostream& os,
                          const std::unique_ptr<cachesim::cache>& caches);
 
 // Main function
@@ -44,6 +40,7 @@ int main(int argc, char* argv[]) {
       break;
     case 2:
     case 3:
+    case 4:
       many_arguments(args);
       break;
     default:
@@ -62,7 +59,7 @@ static void one_argument(const std::string& arg) {
                             ? cachesim::cachesim_version
                             : cachesim::is_help_prefix(arg)
                                   ? cachesim::cachesim_help
-                                  : cachesim::cachesim_default;
+                                  : cachesim::error::invalid_argument;
 
   std::cout << output_message;
 }
@@ -71,21 +68,30 @@ static void one_argument(const std::string& arg) {
 // It aslo generates the random number files depending if the given arguments
 // were valid. Else, it will output the default message to std::cout.
 static void many_arguments(const std::vector<std::string>& args) {
-  bool hex_output = false;
+  auto invalid_argument_read = false;
+  auto hex_output = false;
   std::string config_filename;
   std::string data_filename;
   std::string output_filename;
 
   for (const auto& arg : args) {
-    get_option(arg, &config_filename, &data_filename, &output_filename,
-               &hex_output);
+    try {
+      get_option(arg, &config_filename, &data_filename, &output_filename,
+                 &hex_output);
+    } catch (const std::exception& e) {
+      invalid_argument_read = true;
+      config_filename.clear();
+      break;
+    }
   }
 
   if (!config_filename.empty() && !data_filename.empty()) {
     simulate_allocation(config_filename, data_filename, output_filename,
                         hex_output);
   } else {
-    std::cout << cachesim::cachesim_default;
+    std::cout << (invalid_argument_read
+                      ? cachesim::error::invalid_argument
+                      : cachesim::error::no_input_files_detected);
   }
 }
 
@@ -103,6 +109,8 @@ static void get_option(const std::string& arg, std::string* config,
     }
   } else if (arg == cachesim::hex_prefix) {
     *hex = true;
+  } else {
+    throw std::invalid_argument(cachesim::error::invalid_argument);
   }
 }
 
@@ -122,17 +130,18 @@ static void simulate_allocation(const std::string& config_filename,
     std::unique_ptr<cachesim::cache> cache_simulator(
         create_simulator(config_is, os, hex_output));
     if (data_is.is_open()) {
-      print_header(os, "Address to allocate", "Hit(1)/Miss(0)", "Set ID",
-                   "Old cache line content", "New cache line content");
-      allocate_data(data_is, cache_simulator);
-      print_footer(os, "Total cache allocations: ", "Total cache hits: ",
-                   "Total cache misses: ", "Cache hit frequency: ",
-                   "Cache miss frequency: ", cache_simulator);
+      if (cache_simulator) {
+        print_header(os);
+        allocate_data(data_is, cache_simulator);
+        print_footer(os, cache_simulator);
+      } else {
+        std::cout << cachesim::error::invalid_cache_size;
+      }
     } else {
-      std::cout << "Failed to open " << data_filename << '\n';
+      std::cout << cachesim::error::failed_to_open << data_filename << '\n';
     }
   } else {
-    std::cout << "Failed to open " << config_filename << '\n';
+    std::cout << cachesim::error::failed_to_open << config_filename << '\n';
   }
 }
 
@@ -151,19 +160,27 @@ static std::unique_ptr<cachesim::cache> create_simulator(std::ifstream& is,
   if (is >> size >> type >> line_size >> policy) {
     switch (type) {
       case 0:
-        new_cache = std::make_unique<cachesim::direct_cache>(size, line_size,
-                                                             policy, os, hex);
+        try {
+          new_cache = std::make_unique<cachesim::direct_cache>(size, line_size,
+                                                               policy, os, hex);
+        } catch (const std::exception& e) {
+          new_cache = nullptr;
+        }
         break;
       case 1:
-        new_cache = std::make_unique<cachesim::set_associative_cache>(
-            size, line_size, policy, os, false);
+        try {
+          new_cache = std::make_unique<cachesim::set_associative_cache>(
+              size, line_size, policy, os, hex);
+        } catch (const std::exception& e) {
+          new_cache = nullptr;
+        }
         break;
       default:
-        std::cout << "Invalid cache type read in config file.\n";
+        std::cout << cachesim::error::invalid_cache_type;
         break;
     }
   } else {
-    std::cout << "Invalid input read in config file.\n";
+    std::cout << cachesim::error::invalid_config_input;
   }
 
   return new_cache;
@@ -179,28 +196,24 @@ static void allocate_data(std::ifstream& is,
 }
 
 // Outputs header content to the given std::ostream.
-static void print_header(std::ostream& os, const char* dir,
-                         const char* hit_miss, const char* id,
-                         const char* old_dir, const char* new_dir) {
+static void print_header(std::ostream& os) {
   os << std::setfill('-') << std::setw(106) << '\n';
   os.width(25);
-  os << std::setfill(' ') << dir;
+  os << std::setfill(' ') << "Address to allocate";
   os.width(20);
-  os << hit_miss;
+  os << "Hit(1)/Miss(0)";
   os.width(10);
-  os << id;
+  os << "Set ID";
   os.width(25);
-  os << old_dir;
+  os << "Old cache line content";
   os.width(25);
-  os << new_dir << '\n';
+  os << "New cache line content" << '\n';
   os << std::setfill('-') << std::setw(106) << '\n';
   os << std::setfill(' ');
 }
 
 // Outputs footer content to the given std::ostream.
-static void print_footer(std::ostream& os, const char* alloc_total,
-                         const char* hit_total, const char* miss_total,
-                         const char* hit_frequency, const char* miss_frequency,
+static void print_footer(std::ostream& os,
                          const std::unique_ptr<cachesim::cache>& caches) {
   double total{static_cast<double>(caches->hit_count()) +
                static_cast<double>(caches->miss_count())};
@@ -208,23 +221,23 @@ static void print_footer(std::ostream& os, const char* alloc_total,
   double miss_freq{100 * static_cast<double>(caches->miss_count()) / total};
 
   os.width(25);
-  os << alloc_total;
+  os << "Total cache allocations: ";
   os.width(10);
   os << total << '\n';
   os.width(25);
-  os << hit_total;
+  os << "Total cache hits: ";
   os.width(10);
   os << caches->hit_count() << '\n';
   os.width(25);
-  os << miss_total;
+  os << "Total cache misses: ";
   os.width(10);
   os << caches->miss_count() << '\n';
   os.width(25);
-  os << hit_frequency;
+  os << "Cache hit frequency: ";
   os.width(10);
   os << hit_freq << "%\n";
   os.width(25);
-  os << miss_frequency;
+  os << "Cache miss frequency: ";
   os.width(10);
   os << miss_freq << "%\n";
 }
