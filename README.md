@@ -163,7 +163,7 @@ This project won't receive more updates, pull requests are welcome though. Pleas
 
 ## Version
 
-0.1.1
+0.2.0
 
 ## License
 [MIT](https://github.com/juanyaguaro/cachesim/blob/main/LICENSE)
