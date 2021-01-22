@@ -131,7 +131,7 @@ void cache::print_line(const int& dir, const bool& hit_miss, const int& id,
   os_.width(25);
   os_ << (hex_ ? std::hex : std::dec) << old_dir;
   os_.width(25);
-  os_ << old_dir << std::dec << '\n';
+  os_ << dir << std::dec << '\n';
 }
 
 // Checks whether both total and line sizes are a power of 2 and that the line
