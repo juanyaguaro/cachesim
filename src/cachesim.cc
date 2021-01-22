@@ -106,6 +106,8 @@ static void get_option(const std::string& arg, std::string* config,
       *data = arg.substr(3);
     } else if (arg.rfind(cachesim::out_prefix, 0) == 0) {
       *out = arg.substr(3);
+    } else {
+      throw std::invalid_argument(cachesim::error::invalid_argument);
     }
   } else if (arg == cachesim::hex_prefix) {
     *hex = true;
